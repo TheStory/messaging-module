@@ -1,0 +1,14 @@
+<?php
+
+return [
+	'messaging' => [
+		'host' => 'email-smtp.eu-west-1.amazonaws.com',
+		'smtp_host' => 'HOSTNAME',
+		'port' => 587,
+		'ssl' => 'tls',
+		'username' => 'USERNAME',
+		'password' => 'PASSWORD',
+		'from_name' => 'FROM NAME',
+		'from_email' => 'FROM EMAIL',
+    ],
+];
