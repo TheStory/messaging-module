@@ -1,11 +1,11 @@
 <?php
 
-//  
+//
 //  ginza-polls
-//  
+//
 //  Created by Yaroslav Shatkevich on 2014-07-31.
 //  Copyright 2014 Story Design Sp. z o.o.. All rights reserved.
-// 
+//
 
 namespace Messaging\Service;
 
@@ -14,6 +14,7 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\SmtpOptions;
 use Zend\Mail\Message;
+Use Zend\Mime as Mime;
 use Zend\Mime\Part as MimePart;
 use Zend\Mime\Message as MimeMessage;
 use Zend\View\Model\ViewModel;
@@ -49,7 +50,13 @@ class Mail implements ServiceLocatorAwareInterface
 	 * @param string $template template name under template/ directory
 	 * @param array $variables template variables
 	 */
-	public function send(array $recipients, $subject, $template, array $variables = array())
+	public function send(
+		array $recipients,
+		$subject,
+		$template,
+		array $variables = array(),
+		array $attachments = array()
+	)
 	{
 		// render email template with provided variables
 
@@ -67,8 +74,14 @@ class Mail implements ServiceLocatorAwareInterface
 		$htmlBody = new MimePart($body);
 		$htmlBody->type = 'text/html';
 
+		$parts = array($htmlBody);
+
+		foreach ($attachments as $attachment) {
+			$parts[] = $this->createAttachment($attachment);
+		}
+
 		$mimeMessage = new MimeMessage();
-		$mimeMessage->setParts(array($htmlBody));
+		$mimeMessage->setParts($parts);
 
 		$message = new Message();
 		$message->setFrom($config['from_email'], $config['from_name'])
@@ -96,6 +109,17 @@ class Mail implements ServiceLocatorAwareInterface
 			$message->setTo($email);
 			$smtp->send($message);
 		}
+	}
+
+	protected function createAttachment($filePath){
+		$fileContent = fopen($filePath, 'r');
+		$attachment = new MimePart($fileContent);
+		$attachment->type = 'image/' . pathinfo($filePath, PATHINFO_EXTENSION);
+		$attachment->filename = basename($filePath);
+		$attachment->disposition = Mime\Mime::DISPOSITION_ATTACHMENT;
+		$attachment->encoding = Mime\Mime::ENCODING_BASE64;
+
+		return $attachment;
 	}
 
 }
