@@ -11,4 +11,18 @@ return [
 		'from_name' => 'FROM NAME',
 		'from_email' => 'FROM EMAIL',
     ],
+    'router' => [
+        'routes' => [
+            'render_email_template' => [
+                'type' => 'literal',
+                'options' => [
+                    'route' => '/messaging/render-template',
+                    'defaults' => [
+                        'controller' => 'Messaging\Controller\Index',
+                        'action' => 'render',
+                    ],
+                ],
+            ],
+        ],
+    ],
 ];
