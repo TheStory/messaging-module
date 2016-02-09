@@ -12,6 +12,7 @@ return [
         'password' => '',
         'from_name' => '',
         'from_email' => '',
+        'encoding' => 'UTF-8',
     ],
     'service_manager' => [
         'invokables' => [

@@ -25,7 +25,6 @@ use ZfcTwig\View\TwigRenderer;
  */
 class Mail implements ServiceLocatorAwareInterface
 {
-
     private $serviceLocator;
 
     /**
@@ -68,6 +67,7 @@ class Mail implements ServiceLocatorAwareInterface
 
         $htmlBody = new MimePart($body);
         $htmlBody->type = 'text/html';
+        $htmlBody->setCharset($config['encoding']);
 
         $parts = array($htmlBody);
 
@@ -80,7 +80,7 @@ class Mail implements ServiceLocatorAwareInterface
 
         $message = new Message();
         $message->setFrom($config['from_email'], $config['from_name'])
-            ->setEncoding('UTF-8')
+            ->setEncoding($config['encoding'])
             ->setBody($mimeMessage)
             ->setSubject($subject);
 
@@ -149,5 +149,4 @@ class Mail implements ServiceLocatorAwareInterface
 
         return $body;
     }
-
 }
