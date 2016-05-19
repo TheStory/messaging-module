@@ -45,7 +45,7 @@ class Mail implements ServiceLocatorAwareInterface
 
     /**
      * Send email with provided template
-     * @param array $recipients array of target emails
+     * @param array $recipients array of target emails or to, cc, bcc email arrays
      * @param string $subject mail subject
      * @param string $template template name under template/ directory
      * @param array $variables template variables
@@ -97,12 +97,24 @@ class Mail implements ServiceLocatorAwareInterface
                 'ssl' => $config['ssl'],
             ),
         )));
-
-        // separate send of emails for each recipient
-
-        foreach ($recipients as $email) {
-            $message->setTo($email);
+        
+        if (isset($recipients['to'])) {
+            $message->setTo($recipients['to']);
+            
+            if ($recipients['cc']) {
+                $message->setCc($recipients['cc']);
+            }
+            
+            if ($recipients['bcc']) {
+                $message->setBcc($recipients['bcc']);
+            }
+            
             $smtp->send($message);
+        } else {
+            foreach ($recipients as $email) {
+                $message->setTo($email);
+                $smtp->send($message);
+            }
         }
     }
 
