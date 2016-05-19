@@ -2,7 +2,7 @@
   "name": "thestory/messaging-module",
   "type": "package",
   "description": "Messaging with templates for ZF2",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "require": {
     "php": ">=5.5.0"
   },
