@@ -71,8 +71,8 @@ class Mail implements ServiceLocatorAwareInterface
 
         $parts = array($htmlBody);
 
-        foreach ($attachments as $attachment) {
-            $parts[] = $this->createAttachment($attachment);
+        foreach ($attachments as $key => $attachment) {
+            $parts[] = $this->createAttachment($key, $attachment);
         }
 
         $mimeMessage = new MimeMessage();
@@ -121,15 +121,19 @@ class Mail implements ServiceLocatorAwareInterface
     /**
      * Create attachment from file path
      *
-     * @param $filePath
+     * @param string $fileName
+     * @param string $filePath
      * @return MimePart
      */
-    protected function createAttachment($filePath)
+    protected function createAttachment($fileName, $filePath)
     {
+        $fileType = mime_content_type($filePath);
+        $targetFileName = is_string($fileName) ? $fileName . '.' . pathinfo($filePath, PATHINFO_EXTENSION) : basename($filePath);
+
         $fileContent = fopen($filePath, 'r');
         $attachment = new MimePart($fileContent);
-        $attachment->type = 'image/' . pathinfo($filePath, PATHINFO_EXTENSION);
-        $attachment->filename = basename($filePath);
+        $attachment->type = $fileType;
+        $attachment->filename = $targetFileName;
         $attachment->disposition = Mime\Mime::DISPOSITION_ATTACHMENT;
         $attachment->encoding = Mime\Mime::ENCODING_BASE64;
 
