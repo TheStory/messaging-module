@@ -101,11 +101,11 @@ class Mail implements ServiceLocatorAwareInterface
         if (isset($recipients['to'])) {
             $message->setTo($recipients['to']);
             
-            if ($recipients['cc']) {
+            if (isset($recipients['cc']) && !empty($recipients['cc'])) {
                 $message->setCc($recipients['cc']);
             }
             
-            if ($recipients['bcc']) {
+            if (isset($recipients['bcc']) && !empty($recipients['bcc'])) {
                 $message->setBcc($recipients['bcc']);
             }
             
